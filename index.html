@@ -40,6 +40,8 @@
 							 }
 						});
 						if (!found) $('#result').text( val.name.replace(' County Council', '') );
+					} else {
+						$('#result').text( 'No county found' );
 					}
 				});
 			}
@@ -72,7 +74,7 @@
 	.warning { margin: 0 auto 0.5em; background-color: #ffcccc; }
 	.success { background-color: #ccffcc; }
 	#result { position: absolute; font-size: 500%; text-align: center; top: 50%; margin-top: -0.5em; width: 96%; }
-    #footer { position: absolute; bottom: 1em; right: 2%; }
+	#footer { position: absolute; bottom: 1em; right: 2%; }
 	</style>
 </head>
 <body>
@@ -85,9 +87,9 @@
 
 	</div>
 
-    <div id="footer">
-        <a href="http://github.com/dracos/whatcountyamiin.com">Source code</a>. Based on <a href="http://laughingmeme.org/whatcountyamiin.com/">Kellan's original</a> (<a href="http://github.com/kellan/whatcountyamiin.com">source code</a>), altered to test <a href="http://mapit.mysociety.org/">mapit</a>.
-    </div>
+	<div id="footer">
+		<a href="http://github.com/dracos/whatcountyamiin.com">Source code</a>. Based on <a href="http://laughingmeme.org/whatcountyamiin.com/">Kellan's original</a> (<a href="http://github.com/kellan/whatcountyamiin.com">source code</a>), altered to test <a href="http://mapit.mysociety.org/">mapit</a>.
+	</div>
 
 </html>
 
