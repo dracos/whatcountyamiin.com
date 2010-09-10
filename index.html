@@ -4,21 +4,44 @@
 	<meta name="viewport" content="width=320">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="wx.js?v=2"></script>
+	<script type="text/javascript" src="unitary_to_county.js"></script>
 	<script type="text/javascript">
-		var flickr_key='511c704f033b731387c5b78fff9dad3c'
-		
 		$(document).ready(function() {
 			
 			function gotCoords(position) {
-				if (position && position.coords.latitude && position.coords.longitude) {
-					geocoder = "http://api.flickr.com/services/rest/?method=flickr.places.findByLatLon" +
-						"&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + 
-						"&api_key=" + flickr_key + "&format=json&nojsoncallback=1"
-					
-					$.getJSON(geocoder, function(data) {
-						$('#result').text( data.places.place[0].name )
-					})
+				if (!position || !position.coords.latitude || !position.coords.longitude) {
+					cantGetCoords();
+					return;
 				}
+
+				var s = $('#status');
+				if (s.className == 'success') return;
+				s.html("Location found, looking up county on mapit").addClass('success');
+
+				var geocoder = "http://mapit.mysociety.org/point/4326/" + position.coords.longitude +
+					"," + position.coords.latitude + "?type=MTD,LBO,UTA,CTY,LGD,COI"
+				$.getJSON(geocoder, function(data) {
+					var val;
+					$.each(data, function(id, v) { val = v; return true; });
+					$('#status').hide('fast');
+					if (val.type == 'CTY') {
+						$('#result').text( val.name.replace(' County Council', '') );
+					} else if (val.type == 'LBO') {
+						$('#result').text( 'Greater London' );
+					} else if (val.type == 'LGD') {
+						$('#result').text( val.name );
+					} else if (val.type == 'MTD' || val.type == 'UTA' || val.type == 'COI') {
+						/* A manual lookup from unitary authority/metropolitan district to the county it's in. */
+						var found = false;
+						$.each(unitary_to_county, function(start, county) {
+							if (val.name.indexOf(start) > -1) {
+								$('#result').text( county );
+								found = true;
+							 }
+						});
+						if (!found) $('#result').text( val.name.replace(' County Council', '') );
+					}
+				});
 			}
 			
 			function cantGetCoords(e) {
@@ -60,4 +83,6 @@
 		<div id="result"></div>
 
 	</div>
+
 </html>
+
