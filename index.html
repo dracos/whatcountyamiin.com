@@ -24,7 +24,9 @@
 					var val;
 					$.each(data, function(id, v) { val = v; return true; });
 					$('#status').hide('fast');
-					if (val.type == 'CTY') {
+					if (!val) {
+						$('#result').text( 'No county found' );
+					} else if (val.type == 'CTY') {
 						$('#result').text( val.name.replace(' County Council', '') );
 					} else if (val.type == 'LBO') {
 						$('#result').text( 'Greater London' );
@@ -40,8 +42,6 @@
 							 }
 						});
 						if (!found) $('#result').text( val.name.replace(' County Council', '') );
-					} else {
-						$('#result').text( 'No county found' );
 					}
 				});
 			}
