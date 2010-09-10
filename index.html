@@ -45,7 +45,7 @@
 			}
 			
 			function cantGetCoords(e) {
-				$('#status').html("Can't determine your location :(").addClass('warning');
+				$('#status').html("Can't determine your location :( [" + e + "]").addClass('warning');
 			}
 
 			window.onhashchange = function() {
@@ -66,12 +66,13 @@
 
 	</script>
 	<style>
-	body { font-family: Arial, Helvetica, sans-serif; margin: 2%; }
+	body { font-family: Arial, Helvetica, sans-serif; margin: 1em 2%; }
 	.advert, .warning { border-radius: 0.5em; -moz-border-radius: 0.5em; -webkit-border-radius: 0.5em; padding: 0.5em; }
 	.advert { text-align: center; margin: 0 auto 0.5em; background-color: #ffee99; }
 	.warning { margin: 0 auto 0.5em; background-color: #ffcccc; }
 	.success { background-color: #ccffcc; }
 	#result { position: absolute; font-size: 500%; text-align: center; top: 50%; margin-top: -0.5em; width: 96%; }
+    #footer { position: absolute; bottom: 1em; right: 2%; }
 	</style>
 </head>
 <body>
@@ -83,6 +84,10 @@
 		<div id="result"></div>
 
 	</div>
+
+    <div id="footer">
+        <a href="http://github.com/dracos/whatcountyamiin.com">Source code</a>. Based on <a href="http://laughingmeme.org/whatcountyamiin.com/">Kellan's original</a> (<a href="http://github.com/kellan/whatcountyamiin.com">source code</a>), altered to test <a href="http://mapit.mysociety.org/">mapit</a>.
+    </div>
 
 </html>
 
