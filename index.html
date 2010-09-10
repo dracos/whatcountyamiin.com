@@ -1,8 +1,7 @@
 <html>
 <head>
-	<title>What Country Am I In</title>
+	<title>What County Am I In?</title>
 	<meta name="viewport" content="width=320">
-	<link rel="apple-touch-icon" href="/happy-day-logo-icon.png"/>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="wx.js?v=2"></script>
 	<script type="text/javascript">
@@ -23,26 +22,42 @@
 			}
 			
 			function cantGetCoords(e) {
-				//console.log("cantGet");
-				$('#result').text("Can't determine your location :(");
+				$('#status').html("Can't determine your location :(").addClass('warning');
 			}
 
-			if (WX.geoloc.can_locate()) {
+			window.onhashchange = function() {
+				coords = window.location.hash.substring(1).split(',');
+				gotCoords({
+					'coords': { 'latitude': coords[0], 'longitude': coords[1] }
+				});
+			};
+			if (window.location.hash) {
+				window.onhashchange();
+			} else if (WX.geoloc.can_locate()) {
+				$('#status').html('<img src="http://traintimes.org.uk/map/i/loading.gif" alt="" align="middle"><br>Asking you for your location...');
 				WX.geoloc.get_location(gotCoords, cantGetCoords);
 			} else {
 				cantGetCoords('');
 			}
 		});
+
 	</script>
 	<style>
-	body { 
-		font-family: Arial, Helvetica, sans-serif;
-	}
-	.meta { font-size: 11px; color: #999; }
+	body { font-family: Arial, Helvetica, sans-serif; margin: 2%; }
+	.advert, .warning { border-radius: 0.5em; -moz-border-radius: 0.5em; -webkit-border-radius: 0.5em; padding: 0.5em; }
+	.advert { text-align: center; margin: 0 auto 0.5em; background-color: #ffee99; }
+	.warning { margin: 0 auto 0.5em; background-color: #ffcccc; }
+	.success { background-color: #ccffcc; }
+	#result { position: absolute; font-size: 500%; text-align: center; top: 50%; margin-top: -0.5em; width: 96%; }
 	</style>
 </head>
 <body>
 	<div id="container">
-	<p id="result">Locating you, hold on ....</p>
+
+		<p id="status" class="advert">If you are using a browser capable of geolocation, you should
+		get asked to allow this site to know your location soon. If not, you&rsquo;ll just have this message.</p>
+
+		<div id="result"></div>
+
 	</div>
 </html>
