@@ -14,7 +14,7 @@ WX.geoloc = {
 		this.callback_got_location = callback_got_location;
 		this.callback_fail_location = callback_fail_location;
 		
-		navigator.geolocation.getCurrentPosition(WX.geoloc.got_location, WX.geoloc.fail_location, {timeout:1500});
+		navigator.geolocation.getCurrentPosition(WX.geoloc.got_location, WX.geoloc.fail_location, {timeout:5000});
 	},
 	
 	got_location: function (position) {
