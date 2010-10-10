@@ -1,0 +1,87 @@
+<html>
+<head>
+	<title>What Council Am I In?</title>
+	<meta name="viewport" content="width=320">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="../wx.js?v=2"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+			function gotCoords(position) {
+				if (!position || !position.coords.latitude || !position.coords.longitude) {
+					cantGetCoords();
+					return;
+				}
+
+				var s = $('#status');
+				if (s.className == 'success') return;
+				s.html("Location found, looking up council on mapit").addClass('success');
+
+				var geocoder = "http://mapit.mysociety.org/point/4326/" + position.coords.longitude +
+					"," + position.coords.latitude + "?type=MTD,LBO,UTA,DIS,CTY,LGD,COI"
+				$.getJSON(geocoder, function(data) {
+					$('#status').hide('fast');
+                    var names = [];
+					$.each(data, function(id, v) {
+                        var out = v.name + ' (' + v.codes.ons + ')';
+                        var ol = '/council/json-openlylocal.php?id=' + v.codes.ons;
+                        $.ajax({url: ol, 'async': false, dataType: 'json', success: function(d) {
+                            out += ', ' + d.council.telephone;
+                        }});
+                        names.push(out);
+                    });
+					if (!names.length) {
+						$('#result').text( 'No council found' );
+                    } else {
+					    $('#result').html( names.join('<br>') );
+                    }
+				});
+			}
+			
+			function cantGetCoords(e) {
+				$('#status').html("Can't determine your location :( [" + e + "]").addClass('warning');
+			}
+
+			window.onhashchange = function() {
+				coords = window.location.hash.substring(1).split(',');
+				gotCoords({
+					'coords': { 'latitude': coords[0], 'longitude': coords[1] }
+				});
+			};
+			if (window.location.hash) {
+				window.onhashchange();
+			} else if (WX.geoloc.can_locate()) {
+				$('#status').html('<img src="http://traintimes.org.uk/map/i/loading.gif" alt="" align="middle"><br>Asking you for your location...');
+				WX.geoloc.get_location(gotCoords, cantGetCoords);
+			} else {
+				cantGetCoords('');
+			}
+		});
+
+	</script>
+	<style>
+	body { font-family: Arial, Helvetica, sans-serif; margin: 1em 2%; }
+	.advert, .warning { border-radius: 0.5em; -moz-border-radius: 0.5em; -webkit-border-radius: 0.5em; padding: 0.5em; }
+	.advert { text-align: center; margin: 0 auto 0.5em; background-color: #ffee99; }
+	.warning { margin: 0 auto 0.5em; background-color: #ffcccc; }
+	.success { background-color: #ccffcc; }
+	#result { position: absolute; font-size: 400%; text-align: center; top: 50%; margin-top: -1em; width: 96%; }
+	#footer { position: absolute; bottom: 1em; right: 2%; }
+	</style>
+</head>
+<body>
+	<div id="container">
+
+		<p id="status" class="advert">If you are using a browser capable of geolocation, you should
+		get asked to allow this site to know your location soon. If not, you&rsquo;ll just have this message.</p>
+
+		<div id="result"></div>
+
+	</div>
+
+	<div id="footer">
+		<a href="http://github.com/dracos/whatcountyamiin.com">Source code for main</a> (view source for this).
+	</div>
+
+</html>
+
