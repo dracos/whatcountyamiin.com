@@ -23,12 +23,12 @@
 					$('#status').hide('fast');
                     var names = [];
 					$.each(data, function(id, v) {
-                        var out = v.name + ' (' + v.codes.ons + ')';
-                        var ol = '/council/json-openlylocal.php?id=' + v.codes.ons;
-                        $.ajax({url: ol, 'async': false, dataType: 'json', success: function(d) {
-                            out += ', ' + d.council.telephone;
-                        }});
-                        names.push(out);
+                        var c = v.codes.ons;
+                        names.push(v.name + ' <small>(' + c + ')</small>, <span id="phone_' + c + '"></span>');
+                        var ol = '/council/json-openlylocal.php?id=' + c;
+                        $.getJSON(ol, function(d) {
+                            $('#phone_' + c).text(d.council.telephone);
+                        });
                     });
 					if (!names.length) {
 						$('#result').text( 'No council found' );
@@ -65,7 +65,7 @@
 	.advert { text-align: center; margin: 0 auto 0.5em; background-color: #ffee99; }
 	.warning { margin: 0 auto 0.5em; background-color: #ffcccc; }
 	.success { background-color: #ccffcc; }
-	#result { position: absolute; font-size: 400%; text-align: center; top: 50%; margin-top: -1em; width: 96%; }
+	#result { font-size: 200%; }
 	#footer { position: absolute; bottom: 1em; right: 2%; }
 	</style>
 </head>
